@@ -17,13 +17,13 @@ import {
   LogOut,
   MessageSquareDot,
   Moon,
-  Plus,
   Search,
   Settings,
   User,
   Users,
 } from "lucide-react";
 
+import { AddUserDrawer } from "@/components/add-user-drawer";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -367,14 +367,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Button.Root variant="neutral" mode="ghost">
                 <Button.Icon as={BellDot} />
               </Button.Root>
-              <Button.Root variant="primary" mode="stroke">
+              <Button.Root variant="neutral" mode="stroke">
                 <Button.Icon as={FileDown} />
                 Exportar
               </Button.Root>
-              <Button.Root variant="primary" mode="filled">
-                <Button.Icon as={Plus} />
-                Agregar
-              </Button.Root>
+              <AddUserDrawer />
             </div>
           </header>
         )}

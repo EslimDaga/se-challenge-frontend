@@ -27,9 +27,8 @@ const DrawerOverlay = React.forwardRef<
     <DialogPrimitive.Overlay
       ref={forwardedRef}
       className={cn(
-        // base
         "fixed inset-0 z-50 grid grid-cols-1 place-items-end overflow-hidden bg-overlay backdrop-blur-[10px]",
-        // animation
+
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
       )}
@@ -49,10 +48,9 @@ const DrawerContent = React.forwardRef<
         <DialogPrimitive.Content
           ref={forwardedRef}
           className={cn(
-            // base
-            "size-full max-w-[400px] overflow-y-auto",
-            "border-l border-stroke-soft-200 bg-bg-white-0",
-            // animation
+            "max-w-[400px] overflow-hidden m-4",
+            "rounded-20 bg-bg-white-0 shadow-xl h-[calc(100vh-32px)]",
+
             "data-[state=open]:duration-200 data-[state=open]:ease-out data-[state=open]:animate-in",
             "data-[state=closed]:duration-200 data-[state=closed]:ease-in data-[state=closed]:animate-out",
             "data-[state=open]:slide-in-from-right-full",
@@ -80,7 +78,8 @@ function DrawerHeader({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-stroke-soft-200 p-5",
+        "flex items-center gap-3 border-b border-stroke-soft-200 p-5 rounded-t-20",
+        "bg-bg-white-0 relative z-10 shrink-0",
         className
       )}
       {...rest}
@@ -119,7 +118,10 @@ function DrawerBody({
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("flex-1", className)} {...rest}>
+    <div
+      className={cn("flex-1 overflow-y-auto overflow-x-hidden", className)}
+      {...rest}
+    >
       {children}
     </div>
   );
@@ -133,7 +135,8 @@ function DrawerFooter({
   return (
     <div
       className={cn(
-        "flex items-center gap-4 border-stroke-soft-200 p-5",
+        "flex items-center gap-4 border-t border-stroke-soft-200 p-5 rounded-b-20",
+        "bg-bg-white-0 relative z-10 shrink-0",
         className
       )}
       {...rest}
