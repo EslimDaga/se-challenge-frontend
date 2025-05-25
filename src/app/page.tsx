@@ -102,6 +102,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     width={100}
                     height={40}
                     className="w-auto h-9"
+                    priority
                   />
                   <div
                     className="flex w-auto items-center gap-3 overflow-hidden transition duration-300"
@@ -200,6 +201,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       alt=""
                       width={40}
                       height={40}
+                      priority
                     />
                   </div>
                   <div className="flex w-[172px] shrink-0 items-center gap-3 transition duration-300">
@@ -262,6 +264,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           width={40}
           height={40}
           className="w-20 h-8"
+          priority
         />
         <div className="flex gap-3">
           <button className="transition duration-200 ease-out relative flex size-10 shrink-0 items-center justify-center rounded-10 text-text-sub-600 hover:bg-bg-weak-50 data-[state=open]:bg-bg-weak-50 data-[state=open]:text-primary-base">
@@ -329,6 +332,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   alt=""
                   width={40}
                   height={40}
+                  priority
                 />
               </div>
               <div className="space-y-1">
