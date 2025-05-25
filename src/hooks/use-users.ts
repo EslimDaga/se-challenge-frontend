@@ -1,3 +1,4 @@
+import { CreateUserRequest } from "@/types/user";
 import { GetUsersParams } from "@/types/api-user";
 import { useEffect } from "react";
 import { useUserStore } from "@/stores/user-store";
@@ -15,7 +16,10 @@ export const useUsers = (
     isLoading,
     error,
     hasInitialized,
+    isCreating,
+    createError,
     fetchUsers,
+    createUser,
     reset,
   } = useUserStore();
 
@@ -24,6 +28,10 @@ export const useUsers = (
       fetchUsers(params);
     }
   }, [autoFetch, hasInitialized, fetchUsers, params]);
+
+  const handleCreateUser = async (userData: CreateUserRequest) => {
+    return await createUser(userData);
+  };
 
   return {
     users,
@@ -34,7 +42,10 @@ export const useUsers = (
     isLoading,
     error,
     hasInitialized,
+    isCreating,
+    createError,
     fetchUsers,
+    createUser: handleCreateUser,
     reset,
   };
 };

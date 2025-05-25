@@ -4,14 +4,15 @@ import * as Button from "@/components/ui/button";
 import * as Divider from "@/components/ui/divider";
 import * as Drawer from "@/components/ui/drawer";
 import * as Dropdown from "@/components/ui/dropdown";
+import * as FormField from "@/components/ui/form-field";
 import * as Input from "@/components/ui/input";
 import * as React from "react";
 import * as Switch from "@/components/ui/switch";
 
-import { AtSign, Mail, Plus, Shield, User } from "lucide-react";
-import type { CreateUserRequest, UserRole } from "@/types/user";
+import { ChevronDown, Loader2, Plus } from "lucide-react";
+import { CreateUserRequest, UserRole } from "@/types/user";
 
-import { FormField } from "@/components/ui/form-field";
+import { toast } from "sonner";
 import { useUserForm } from "@/hooks/use-user-form";
 
 const UserRoleOption = React.forwardRef<
@@ -20,14 +21,13 @@ const UserRoleOption = React.forwardRef<
     role: string;
     description: string;
   }
->(({ role, description, ...rest }, forwardedRef) => {
+>(({ role, ...rest }, forwardedRef) => {
   return (
     <Dropdown.Item ref={forwardedRef} {...rest}>
       <div className="flex flex-col gap-1">
         <div className="text-label-sm text-text-strong-950 capitalize">
           {role}
         </div>
-        <div className="text-paragraph-xs text-text-sub-600">{description}</div>
       </div>
     </Dropdown.Item>
   );
@@ -59,9 +59,9 @@ export function AddUserDrawer({
       description: "Acceso limitado a funcionalidades básicas",
     },
     {
-      value: "guest",
-      label: "Invitado",
-      description: "Acceso restringido a ciertas áreas",
+      value: "moderator",
+      label: "Moderador",
+      description: "Acceso intermedio con permisos de moderación",
     },
   ];
 
@@ -69,8 +69,20 @@ export function AddUserDrawer({
     try {
       await onSubmit(values);
 
+      toast.success("Usuario creado exitosamente", {
+        description: `${values.first_name} ${values.last_name} ha sido agregado al sistema.`,
+      });
+
+      formik.resetForm();
+
       onOpenChange?.(false);
     } catch (error) {
+      toast.error("Error al crear usuario", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Ocurrió un error inesperado",
+      });
       throw error;
     }
   };
@@ -103,56 +115,48 @@ export function AddUserDrawer({
 
         <Drawer.Body className="flex-1 overflow-y-auto relative">
           <form id="add-user-form" onSubmit={formik.handleSubmit}>
-            <div className="p-5 rounded-xl">
-              <div className="flex justify-center">
-                <div className="flex size-16 items-center justify-center rounded-full bg-primary-alpha-10">
-                  <User className="size-8 text-primary-base" />
-                </div>
-              </div>
-            </div>
-
             <Divider.Root variant="solid-text">
               Información Personal
             </Divider.Root>
 
             <div className="p-5 space-y-6">
-              <FormField
-                label="Nombre"
-                required
-                error={getFieldError("first_name")}
-              >
-                <Input.Root hasError={hasFieldError("first_name")}>
-                  <Input.Wrapper>
-                    <Input.Icon as={User} />
-                    <Input.Input
-                      {...getFieldProps("first_name")}
-                      placeholder="Ingresa el nombre"
-                    />
-                  </Input.Wrapper>
-                </Input.Root>
-              </FormField>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField.FormField
+                  label="Nombre"
+                  required
+                  error={getFieldError("first_name")}
+                >
+                  <Input.Root hasError={hasFieldError("first_name")}>
+                    <Input.Wrapper>
+                      <Input.Input
+                        {...getFieldProps("first_name")}
+                        placeholder="Ingresa el nombre"
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </FormField.FormField>
 
-              <FormField
-                label="Apellido"
-                required
-                error={getFieldError("last_name")}
-              >
-                <Input.Root hasError={hasFieldError("last_name")}>
-                  <Input.Wrapper>
-                    <Input.Icon as={User} />
-                    <Input.Input
-                      {...getFieldProps("last_name")}
-                      placeholder="Ingresa el apellido"
-                    />
-                  </Input.Wrapper>
-                </Input.Root>
-              </FormField>
+                <FormField.FormField
+                  label="Apellido"
+                  required
+                  error={getFieldError("last_name")}
+                >
+                  <Input.Root hasError={hasFieldError("last_name")}>
+                    <Input.Wrapper>
+                      <Input.Input
+                        {...getFieldProps("last_name")}
+                        placeholder="Ingresa el apellido"
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </FormField.FormField>
+              </div>
             </div>
 
             <Divider.Root variant="solid-text">Credenciales</Divider.Root>
 
             <div className="p-5 space-y-6">
-              <FormField
+              <FormField.FormField
                 label="Nombre de Usuario"
                 required
                 error={getFieldError("username")}
@@ -160,16 +164,15 @@ export function AddUserDrawer({
               >
                 <Input.Root hasError={hasFieldError("username")}>
                   <Input.Wrapper>
-                    <Input.Icon as={AtSign} />
                     <Input.Input
                       {...getFieldProps("username")}
-                      placeholder="username"
+                      placeholder="Ingresa el nombre de usuario"
                     />
                   </Input.Wrapper>
                 </Input.Root>
-              </FormField>
+              </FormField.FormField>
 
-              <FormField
+              <FormField.FormField
                 label="Email"
                 required
                 error={getFieldError("email")}
@@ -177,7 +180,6 @@ export function AddUserDrawer({
               >
                 <Input.Root hasError={hasFieldError("email")}>
                   <Input.Wrapper>
-                    <Input.Icon as={Mail} />
                     <Input.Input
                       {...getFieldProps("email")}
                       type="email"
@@ -185,13 +187,13 @@ export function AddUserDrawer({
                     />
                   </Input.Wrapper>
                 </Input.Root>
-              </FormField>
+              </FormField.FormField>
             </div>
 
             <Divider.Root variant="solid-text">Configuración</Divider.Root>
 
             <div className="p-5 space-y-6">
-              <FormField
+              <FormField.FormField
                 label="Rol"
                 required
                 error={getFieldError("role")}
@@ -202,42 +204,19 @@ export function AddUserDrawer({
                   onOpenChange={setIsRoleDropdownOpen}
                 >
                   <Dropdown.Trigger asChild>
-                    <button
+                    <Button.Root
+                      variant="neutral"
+                      mode="stroke"
+                      className="w-full justify-between"
                       type="button"
-                      className={`flex w-full items-center justify-between rounded-10 bg-bg-white-0 px-3 py-2.5 text-left shadow-regular-xs ring-1 ring-inset transition duration-200 ease-out hover:bg-bg-weak-50 hover:shadow-none hover:ring-transparent focus:outline-none focus:shadow-button-important-focus focus:ring-stroke-strong-950 ${
-                        hasFieldError("role")
-                          ? "ring-error-base"
-                          : "ring-stroke-soft-200"
-                      }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <Shield className="size-5 text-text-sub-600" />
-                        <div className="flex flex-col">
-                          <span className="text-paragraph-sm text-text-strong-950 capitalize">
-                            {selectedRoleData?.label || "Seleccionar rol"}
-                          </span>
-                          <span className="text-paragraph-xs text-text-sub-600">
-                            {selectedRoleData?.description ||
-                              "Selecciona un rol para el usuario"}
-                          </span>
-                        </div>
+                      <div className="flex flex-col items-start gap-1">
+                        <span className="text-paragraph-sm text-text-strong-950 capitalize">
+                          {selectedRoleData?.label || "Seleccionar rol"}
+                        </span>
                       </div>
-                      <svg
-                        className={`size-5 text-text-sub-600 transition-transform duration-200 ${
-                          isRoleDropdownOpen ? "rotate-180" : ""
-                        }`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
+                      <Button.Icon as={ChevronDown} />
+                    </Button.Root>
                   </Dropdown.Trigger>
                   <Dropdown.Content
                     align="start"
@@ -248,7 +227,7 @@ export function AddUserDrawer({
                         key={role.value}
                         role={role.label}
                         description={role.description}
-                        onSelect={() => {
+                        onClick={() => {
                           formik.setFieldValue("role", role.value);
                           setIsRoleDropdownOpen(false);
                         }}
@@ -256,7 +235,7 @@ export function AddUserDrawer({
                     ))}
                   </Dropdown.Content>
                 </Dropdown.Root>
-              </FormField>
+              </FormField.FormField>
 
               <div className="space-y-3">
                 <div className="space-y-1">
@@ -286,47 +265,18 @@ export function AddUserDrawer({
                   />
                 </div>
               </div>
-
-              <div className="rounded-lg bg-blue-50 p-4">
-                <div className="flex gap-3">
-                  <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
-                    <svg
-                      className="size-3 text-blue-600"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="text-label-sm text-blue-800">
-                      Información importante
-                    </div>
-                    <div className="text-paragraph-xs text-blue-700">
-                      Se enviará un email de bienvenida al usuario con
-                      instrucciones para establecer su contraseña.
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </form>
         </Drawer.Body>
 
         <Drawer.Footer className="sticky bottom-0 z-10 bg-white border-t border-stroke-soft-200">
-          <div className="flex w-full gap-3 justify-between">
+          <div className="flex w-full gap-3">
             <Drawer.Close asChild>
               <Button.Root
-                type="button"
                 variant="neutral"
                 mode="stroke"
                 size="medium"
                 className="flex-1"
-                disabled={isSubmitting}
               >
                 Cancelar
               </Button.Root>
@@ -338,13 +288,13 @@ export function AddUserDrawer({
               mode="filled"
               size="medium"
               className="flex-1"
-              disabled={isSubmitting || !formik.isValid}
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
-                <div className="flex items-center justify-center">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                  <span className="ml-2">Creando...</span>
-                </div>
+                <>
+                  <Button.Icon as={Loader2} className="animate-spin" />
+                  Creando Usuario
+                </>
               ) : (
                 <>
                   <Button.Icon as={Plus} />

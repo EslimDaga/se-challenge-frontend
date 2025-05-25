@@ -36,7 +36,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const { users, total, isLoading, error, hasInitialized } = useUsers();
+  const { users, total, isLoading, error, hasInitialized, createUser } =
+    useUsers();
 
   const menuLinks = [
     {
@@ -90,7 +91,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const handleCreateUser = async (userData: CreateUserRequest) => {
     try {
-      console.log(userData);
+      await createUser(userData);
     } catch (error) {
       console.error("Error creating user:", error);
       throw error;

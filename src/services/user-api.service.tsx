@@ -1,4 +1,6 @@
-import { ApiUsersResponse, GetUsersParams } from "@/types/api-user";
+import { ApiUser, ApiUsersResponse, GetUsersParams } from "@/types/api-user";
+
+import { CreateUserRequest } from "@/types/user";
 
 class UserApiService {
   private readonly baseUrl: string;
@@ -42,6 +44,35 @@ class UserApiService {
       return data;
     } catch (error) {
       console.error("Error fetching users:", error);
+      throw error;
+    }
+  }
+
+  async createUser(userData: CreateUserRequest): Promise<ApiUser> {
+    const url = `${this.baseUrl}/users/`;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.detail ||
+            `API Error: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data: ApiUser = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error creating user:", error);
       throw error;
     }
   }

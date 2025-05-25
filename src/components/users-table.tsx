@@ -232,14 +232,6 @@ const columns: ColumnDef<UserTableData>[] = [
         <span className="text-label-sm text-text-strong-950">
           {formatDate(row.original.created_at)}
         </span>
-        <span className="text-paragraph-xs text-text-sub-600">
-          Hace{" "}
-          {Math.floor(
-            (Date.now() - new Date(row.original.created_at).getTime()) /
-              (1000 * 60 * 60 * 24)
-          )}{" "}
-          días
-        </span>
       </div>
     ),
   },
