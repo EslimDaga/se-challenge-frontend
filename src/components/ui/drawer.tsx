@@ -27,7 +27,7 @@ const DrawerOverlay = React.forwardRef<
     <DialogPrimitive.Overlay
       ref={forwardedRef}
       className={cn(
-        "fixed inset-0 z-50 grid grid-cols-1 place-items-end overflow-hidden bg-overlay backdrop-blur-[10px]",
+        "fixed inset-0 z-50 grid grid-cols-1 place-items-end overflow-hidden bg-overlay backdrop-blur-[10px] p-2",
 
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
@@ -48,8 +48,8 @@ const DrawerContent = React.forwardRef<
         <DialogPrimitive.Content
           ref={forwardedRef}
           className={cn(
-            "max-w-[400px] overflow-hidden m-4",
-            "rounded-20 bg-bg-white-0 shadow-xl h-[calc(100vh-32px)]",
+            "size-full max-w-[400px] overflow-y-auto",
+            "border-l border-stroke-soft-200 bg-bg-white-0",
 
             "data-[state=open]:duration-200 data-[state=open]:ease-out data-[state=open]:animate-in",
             "data-[state=closed]:duration-200 data-[state=closed]:ease-in data-[state=closed]:animate-out",
@@ -78,8 +78,7 @@ function DrawerHeader({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-b border-stroke-soft-200 p-5 rounded-t-20",
-        "bg-bg-white-0 relative z-10 shrink-0",
+        "flex items-center gap-3 border-stroke-soft-200 p-5",
         className
       )}
       {...rest}
@@ -87,7 +86,7 @@ function DrawerHeader({
       {children}
 
       {showCloseButton && (
-        <DrawerClose asChild>
+        <DrawerClose asChild className="cursor-pointer">
           <CompactButton.Root variant="ghost" size="large">
             <CompactButton.Icon as={X} />
           </CompactButton.Root>
@@ -118,10 +117,7 @@ function DrawerBody({
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
-      className={cn("flex-1 overflow-y-auto overflow-x-hidden", className)}
-      {...rest}
-    >
+    <div className={cn("flex-1", className)} {...rest}>
       {children}
     </div>
   );
@@ -135,8 +131,7 @@ function DrawerFooter({
   return (
     <div
       className={cn(
-        "flex items-center gap-4 border-t border-stroke-soft-200 p-5 rounded-b-20",
-        "bg-bg-white-0 relative z-10 shrink-0",
+        "flex items-center gap-4 border-stroke-soft-200 p-5",
         className
       )}
       {...rest}

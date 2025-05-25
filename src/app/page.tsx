@@ -83,6 +83,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return pathname.startsWith(href);
   };
 
+  const handleCreateUser = async (userData: CreateUserRequest) => {
+    try {
+      console.log(userData);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-start lg:grid lg:grid-cols-[auto_minmax(0,_1fr)] bg-zinc-100">
       <div className="transition-all-default fixed left-0 top-0 z-40 hidden h-full overflow-hidden duration-300 lg:block w-[272px] bg-zinc-100">
@@ -375,7 +384,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Button.Icon as={FileDown} />
                 Exportar
               </Button.Root>
-              <AddUserDrawer />
+              <AddUserDrawer onSubmit={handleCreateUser} />
             </div>
           </header>
         )}
