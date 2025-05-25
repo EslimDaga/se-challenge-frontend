@@ -22,16 +22,20 @@ import {
   User,
   Users,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { AddUserDrawer } from "@/components/add-user-drawer";
+import { CreateUserRequest } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useUsers } from "@/hooks/use-users";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const { users, total, isLoading, error, hasInitialized } = useUsers();
 
   const menuLinks = [
     {
@@ -91,6 +95,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
+
+  useEffect(() => {
+    if (hasInitialized && !isLoading) {
+      console.group("🔍 Users Data from API");
+      console.log("📊 Total users:", total);
+      console.log("👥 Users list:", users);
+      console.log("🔄 Loading state:", isLoading);
+      console.log("❌ Error state:", error);
+      console.groupEnd();
+    }
+  }, [users, total, isLoading, error, hasInitialized]);
 
   return (
     <div className="flex min-h-screen flex-col items-start lg:grid lg:grid-cols-[auto_minmax(0,_1fr)] bg-zinc-100">
