@@ -65,7 +65,7 @@ const SegmentedControlTrigger = React.forwardRef<
     <TabsPrimitive.Trigger
       ref={forwardedRef}
       className={cn(
-        "peer",
+        "peer cursor-pointer",
         "relative z-10 h-7 whitespace-nowrap rounded-md px-1 text-label-sm text-text-soft-400 outline-none",
         "flex items-center justify-center gap-1.5",
         "transition duration-300 ease-out",
