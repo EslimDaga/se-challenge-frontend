@@ -76,6 +76,87 @@ class UserApiService {
       throw error;
     }
   }
+
+  async getUserById(id: number): Promise<ApiUser> {
+    const url = `${this.baseUrl}/users/${id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data: ApiUser = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      throw error;
+    }
+  }
+
+  async updateUser(
+    id: number,
+    userData: Partial<CreateUserRequest>
+  ): Promise<ApiUser> {
+    const url = `${this.baseUrl}/users/${id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.detail ||
+            `API Error: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data: ApiUser = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const url = `${this.baseUrl}/users/${id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.detail ||
+            `API Error: ${response.status} ${response.statusText}`
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      throw error;
+    }
+  }
 }
 
 export const userApiService = new UserApiService();

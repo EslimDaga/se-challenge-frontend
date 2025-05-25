@@ -14,7 +14,6 @@ import {
   ArrowDown,
   Home,
   ChevronRight,
-  MoreHorizontal,
   Users,
   CheckCircle,
   XCircle,
@@ -26,12 +25,13 @@ import {
 } from "lucide-react";
 
 import * as Breadcrumb from "@/components/ui/breadcrumb";
-import * as Button from "@/components/ui/button";
+
 import * as Checkbox from "@/components/ui/checkbox";
 import * as Pagination from "@/components/ui/pagination";
 import * as SegmentedControl from "@/components/ui/segmented-control";
 import * as StatusBadge from "@/components/ui/status-badge";
 import * as Table from "@/components/ui/table";
+import { UserActionsDropdown } from "./user-actions-dropdown";
 
 import { useUserTable } from "@/hooks/use-user-table";
 import { UserTableData } from "@/types/user-table";
@@ -238,11 +238,7 @@ const columns: ColumnDef<UserTableData>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: () => (
-      <Button.Root variant="neutral" mode="ghost" size="xsmall">
-        <Button.Icon as={MoreHorizontal} />
-      </Button.Root>
-    ),
+    cell: ({ row }) => <UserActionsDropdown user={row.original} />,
   },
 ];
 

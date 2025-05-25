@@ -20,6 +20,9 @@ export const useUsers = (
     createError,
     fetchUsers,
     createUser,
+    getUserById,
+    updateUser,
+    deleteUser,
     reset,
   } = useUserStore();
 
@@ -31,6 +34,21 @@ export const useUsers = (
 
   const handleCreateUser = async (userData: CreateUserRequest) => {
     return await createUser(userData);
+  };
+
+  const handleUpdateUser = async (
+    id: number,
+    userData: Partial<CreateUserRequest>
+  ) => {
+    return await updateUser(id, userData);
+  };
+
+  const handleDeleteUser = async (id: number) => {
+    return await deleteUser(id);
+  };
+
+  const handleGetUserById = async (id: number) => {
+    return await getUserById(id);
   };
 
   return {
@@ -46,6 +64,9 @@ export const useUsers = (
     createError,
     fetchUsers,
     createUser: handleCreateUser,
+    updateUser: handleUpdateUser,
+    deleteUser: handleDeleteUser,
+    getUserById: handleGetUserById,
     reset,
   };
 };
