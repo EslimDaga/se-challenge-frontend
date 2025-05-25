@@ -331,9 +331,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Users className="size-6 text-text-sub-600" />
               </div>
               <div className="space-y-1">
-                <div className="text-label-md lg:text-label-lg">
-                  Usuarios {isLoading ? "(Cargando...)" : `(${total})`}
-                </div>
+                <div className="text-label-md lg:text-label-lg">Usuarios</div>
                 <div className="text-paragraph-sm text-text-sub-600">
                   Gestión de Usuarios
                 </div>

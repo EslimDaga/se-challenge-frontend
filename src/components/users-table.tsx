@@ -74,11 +74,11 @@ const columns: ColumnDef<UserTableData>[] = [
     enableHiding: false,
   },
   {
-    id: "user",
+    id: "first_name",
     accessorKey: "first_name",
     header: ({ column }) => (
       <div className="flex items-center gap-1">
-        Usuario
+        Nombre
         <button
           type="button"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -88,28 +88,60 @@ const columns: ColumnDef<UserTableData>[] = [
         </button>
       </div>
     ),
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-label-sm text-text-strong-950">
-              {user.first_name} {user.last_name}
-            </span>
-            <span className="text-paragraph-xs text-text-sub-600">
-              {user.email}
-            </span>
-          </div>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <span className="text-label-sm text-text-strong-950">
+        {row.original.first_name}
+      </span>
+    ),
+  },
+  {
+    id: "last_name",
+    accessorKey: "last_name",
+    header: ({ column }) => (
+      <div className="flex items-center gap-1">
+        Apellido
+        <button
+          type="button"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="ml-1 hover:text-text-strong-950"
+        >
+          {getSortingIcon(column.getIsSorted())}
+        </button>
+      </div>
+    ),
+    cell: ({ row }) => (
+      <span className="text-label-sm text-text-strong-950">
+        {row.original.last_name}
+      </span>
+    ),
+  },
+  {
+    id: "email",
+    accessorKey: "email",
+    header: ({ column }) => (
+      <div className="flex items-center gap-1">
+        Email
+        <button
+          type="button"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="ml-1 hover:text-text-strong-950"
+        >
+          {getSortingIcon(column.getIsSorted())}
+        </button>
+      </div>
+    ),
+    cell: ({ row }) => (
+      <span className="text-paragraph-sm text-text-sub-600">
+        {row.original.email}
+      </span>
+    ),
   },
   {
     id: "username",
     accessorKey: "username",
     header: ({ column }) => (
       <div className="flex items-center gap-1">
-        Nombre de Usuario
+        Usuario
         <button
           type="button"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -149,7 +181,7 @@ const columns: ColumnDef<UserTableData>[] = [
       };
 
       return (
-        <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+        <span className="text-label-sm text-text-strong-950 capitalize">
           {roleLabels[role]}
         </span>
       );
@@ -225,6 +257,7 @@ const columns: ColumnDef<UserTableData>[] = [
 function TablePagination({
   pagination,
   onPageChange,
+  onPageSizeChange,
 }: {
   pagination: ReturnType<typeof useUserTable>["pagination"];
   onPageChange: (page: number) => void;
@@ -263,60 +296,72 @@ function TablePagination({
   }, [page, pages]);
 
   return (
-    <div className="flex items-center justify-between px-4 py-3">
-      <div className="text-sm text-text-sub-600">
-        Mostrando {Math.min((page - 1) * size + 1, total)} a{" "}
-        {Math.min(page * size, total)} de {total} resultados
-      </div>
+    <div className="sticky bottom-0 z-10 bg-white shadow-sm">
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="text-sm text-text-sub-600">
+          Mostrando {Math.min((page - 1) * size + 1, total)} a{" "}
+          {Math.min(page * size, total)} de {total} resultados
+        </div>
 
-      <Pagination.Root>
-        <Pagination.NavButton
-          disabled={!hasPrev}
-          onClick={() => onPageChange(1)}
-        >
-          <Pagination.NavIcon as={ChevronsLeft} />
-        </Pagination.NavButton>
+        <Pagination.Root>
+          <Pagination.NavButton
+            disabled={!hasPrev}
+            onClick={() => onPageChange(1)}
+          >
+            <Pagination.NavIcon as={ChevronsLeft} />
+          </Pagination.NavButton>
 
-        <Pagination.NavButton
-          disabled={!hasPrev}
-          onClick={() => onPageChange(page - 1)}
-        >
-          <Pagination.NavIcon as={ChevronLeft} />
-        </Pagination.NavButton>
+          <Pagination.NavButton
+            disabled={!hasPrev}
+            onClick={() => onPageChange(page - 1)}
+          >
+            <Pagination.NavIcon as={ChevronLeft} />
+          </Pagination.NavButton>
 
-        {pageNumbers.map((pageNum, index) =>
-          pageNum === "..." ? (
-            <Pagination.Item key={`dots-${index}`} disabled>
-              ...
-            </Pagination.Item>
-          ) : (
-            <Pagination.Item
-              key={pageNum}
-              current={pageNum === page}
-              onClick={() => onPageChange(pageNum as number)}
-            >
-              {pageNum}
-            </Pagination.Item>
-          )
-        )}
+          {pageNumbers.map((pageNum, index) =>
+            pageNum === "..." ? (
+              <Pagination.Item key={`dots-${index}`} disabled>
+                ...
+              </Pagination.Item>
+            ) : (
+              <Pagination.Item
+                key={pageNum}
+                current={pageNum === page}
+                onClick={() => onPageChange(pageNum as number)}
+              >
+                {pageNum}
+              </Pagination.Item>
+            )
+          )}
 
-        <Pagination.NavButton
-          disabled={!hasNext}
-          onClick={() => onPageChange(page + 1)}
-        >
-          <Pagination.NavIcon as={ChevronRightIcon} />
-        </Pagination.NavButton>
+          <Pagination.NavButton
+            disabled={!hasNext}
+            onClick={() => onPageChange(page + 1)}
+          >
+            <Pagination.NavIcon as={ChevronRightIcon} />
+          </Pagination.NavButton>
 
-        <Pagination.NavButton
-          disabled={!hasNext}
-          onClick={() => onPageChange(pages)}
-        >
-          <Pagination.NavIcon as={ChevronsRight} />
-        </Pagination.NavButton>
-      </Pagination.Root>
+          <Pagination.NavButton
+            disabled={!hasNext}
+            onClick={() => onPageChange(pages)}
+          >
+            <Pagination.NavIcon as={ChevronsRight} />
+          </Pagination.NavButton>
+        </Pagination.Root>
 
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-text-sub-600">Mostrar:</span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-text-sub-600">Mostrar:</span>
+          <select
+            value={size}
+            onChange={(e) => onPageSizeChange(parseInt(e.target.value))}
+            className="h-8 px-2 text-sm border border-stroke-soft-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-base"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
       </div>
     </div>
   );
@@ -352,7 +397,7 @@ export function UsersTable() {
     initialState: {
       sorting: [
         {
-          id: "user",
+          id: "first_name",
           desc: false,
         },
       ],
@@ -373,21 +418,22 @@ export function UsersTable() {
   }
 
   return (
-    <div className="w-full space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full w-full">
+      <div className="mb-6">
         <Breadcrumb.Root>
           <Breadcrumb.Item>
             <Breadcrumb.Icon as={Home} />
+            Dashboard
           </Breadcrumb.Item>
-
           <Breadcrumb.ArrowIcon as={ChevronRight} />
-
-          <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-
-          <Breadcrumb.ArrowIcon as={ChevronRight} />
-
           <Breadcrumb.Item active>Usuarios</Breadcrumb.Item>
         </Breadcrumb.Root>
+      </div>
+
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-text-strong-950">
+          Lista de Usuarios
+        </h2>
 
         <SegmentedControl.Root
           value={filters.status}
@@ -412,64 +458,76 @@ export function UsersTable() {
         </SegmentedControl.Root>
       </div>
 
-      <Table.Root>
-        <Table.Header>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Table.Head key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </Table.Head>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Header>
-
-        <Table.Body>
-          {isLoading ? (
-            <Table.Row>
-              <Table.Cell colSpan={columns.length} className="text-center py-8">
-                <Clock className="size-6 animate-spin mx-auto mb-2" />
-                Cargando usuarios...
-              </Table.Cell>
-            </Table.Row>
-          ) : table.getRowModel().rows?.length > 0 ? (
-            table.getRowModel().rows.map((row, index, array) => (
-              <React.Fragment key={row.id}>
-                <Table.Row data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
-                    <Table.Cell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </Table.Cell>
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex-1 overflow-auto">
+          <Table.Root>
+            <Table.Header>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <Table.Row key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <Table.Head key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </Table.Head>
                   ))}
                 </Table.Row>
-                {index < array.length - 1 && <Table.RowDivider />}
-              </React.Fragment>
-            ))
-          ) : (
-            <Table.Row>
-              <Table.Cell colSpan={columns.length} className="text-center py-8">
-                <Users className="size-8 mx-auto mb-2 text-text-soft-400" />
-                <p className="text-text-sub-600">No se encontraron usuarios</p>
-              </Table.Cell>
-            </Table.Row>
-          )}
-        </Table.Body>
-      </Table.Root>
+              ))}
+            </Table.Header>
 
-      <TablePagination
-        pagination={pagination}
-        onPageChange={setCurrentPage}
-        onPageSizeChange={setPageSize}
-      />
+            <Table.Body>
+              {isLoading ? (
+                <Table.Row>
+                  <Table.Cell
+                    colSpan={columns.length}
+                    className="text-center py-8"
+                  >
+                    <Clock className="size-6 animate-spin mx-auto mb-2" />
+                    Cargando usuarios...
+                  </Table.Cell>
+                </Table.Row>
+              ) : table.getRowModel().rows?.length > 0 ? (
+                table.getRowModel().rows.map((row, index, array) => (
+                  <React.Fragment key={row.id}>
+                    <Table.Row data-state={row.getIsSelected() && "selected"}>
+                      {row.getVisibleCells().map((cell) => (
+                        <Table.Cell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Table.Cell>
+                      ))}
+                    </Table.Row>
+                    {index < array.length - 1 && <Table.RowDivider />}
+                  </React.Fragment>
+                ))
+              ) : (
+                <Table.Row>
+                  <Table.Cell
+                    colSpan={columns.length}
+                    className="text-center py-8"
+                  >
+                    <Users className="size-8 mx-auto mb-2 text-text-soft-400" />
+                    <p className="text-text-sub-600">
+                      No se encontraron usuarios
+                    </p>
+                  </Table.Cell>
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table.Root>
+        </div>
+
+        <TablePagination
+          pagination={pagination}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+        />
+      </div>
     </div>
   );
 }
