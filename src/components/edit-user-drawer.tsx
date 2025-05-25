@@ -22,7 +22,6 @@ interface EditUserDrawerProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-// Datos de roles - mejor práctica: constantes fuera del componente
 const USER_ROLES: UserRole[] = [
   {
     value: "admin",
@@ -41,7 +40,6 @@ const USER_ROLES: UserRole[] = [
   },
 ];
 
-// Componente para el estado de carga
 const LoadingState: React.FC<{
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -63,7 +61,6 @@ const LoadingState: React.FC<{
   </Drawer.Root>
 );
 
-// Componente para el selector de rol
 const RoleSelector: React.FC<{
   selectedRole: string;
   onRoleChange: (role: string) => void;
@@ -125,12 +122,10 @@ const RoleSelector: React.FC<{
   );
 };
 
-// Componente para el toggle de estado activo - ARREGLADO
 const ActiveStatusToggle: React.FC<{
   isActive: boolean;
   onToggle: (checked: boolean) => void;
 }> = React.memo(({ isActive, onToggle }) => {
-  // Memoizar el handler para evitar recreaciones innecesarias
   const handleToggle = React.useCallback(
     (checked: boolean) => {
       onToggle(checked);
@@ -173,7 +168,6 @@ export function EditUserDrawer({
 
   const { getUserById, updateUser } = useUserStore();
 
-  // Cargar datos del usuario
   React.useEffect(() => {
     if (!isOpen || !userId) return;
 
@@ -187,7 +181,7 @@ export function EditUserDrawer({
           username: userData.username,
           email: userData.email,
           role: userData.role,
-          is_active: userData.active, // Mapear 'active' a 'is_active'
+          is_active: userData.active,
         };
         setInitialValues(mappedData);
       } catch (error) {
@@ -202,7 +196,6 @@ export function EditUserDrawer({
     loadUserData();
   }, [isOpen, userId, getUserById, onOpenChange]);
 
-  // Handler para actualizar usuario
   const handleSubmit = React.useCallback(
     async (values: CreateUserRequest) => {
       try {
@@ -218,7 +211,6 @@ export function EditUserDrawer({
     [userId, updateUser, onOpenChange]
   );
 
-  // Hook del formulario
   const {
     formik,
     getFieldProps,
@@ -231,14 +223,12 @@ export function EditUserDrawer({
     initialValues: initialValues || undefined,
   });
 
-  // Resetear formulario cuando cambian los valores iniciales
   React.useEffect(() => {
     if (initialValues && formik.resetForm) {
       formik.resetForm({ values: initialValues as CreateUserRequest });
     }
   }, [initialValues, formik.resetForm]);
 
-  // Handler memoizado para el toggle de estado activo
   const handleActiveToggle = React.useCallback(
     (checked: boolean) => {
       formik.setFieldValue("is_active", checked);
@@ -246,7 +236,6 @@ export function EditUserDrawer({
     [formik.setFieldValue]
   );
 
-  // Handler memoizado para el cambio de rol
   const handleRoleChange = React.useCallback(
     (role: string) => {
       formik.setFieldValue("role", role);
@@ -254,7 +243,6 @@ export function EditUserDrawer({
     [formik.setFieldValue]
   );
 
-  // Mostrar estado de carga
   if (isLoading || !initialValues) {
     return <LoadingState isOpen={isOpen} onOpenChange={onOpenChange} />;
   }
@@ -285,6 +273,8 @@ export function EditUserDrawer({
                         <Input.Input
                           {...getFieldProps("first_name")}
                           placeholder="Ingresa el nombre"
+                          type="text"
+                          value={values.first_name || ""}
                         />
                       </Input.Wrapper>
                     </Input.Root>
@@ -300,6 +290,8 @@ export function EditUserDrawer({
                         <Input.Input
                           {...getFieldProps("last_name")}
                           placeholder="Ingresa el apellido"
+                          type="text"
+                          value={values.last_name || ""}
                         />
                       </Input.Wrapper>
                     </Input.Root>
@@ -319,6 +311,8 @@ export function EditUserDrawer({
                       <Input.Input
                         {...getFieldProps("username")}
                         placeholder="Ingresa el nombre de usuario"
+                        type="text"
+                        value={values.username || ""}
                       />
                     </Input.Wrapper>
                   </Input.Root>
@@ -336,6 +330,7 @@ export function EditUserDrawer({
                         {...getFieldProps("email")}
                         type="email"
                         placeholder="email@ejemplo.com"
+                        value={values.email || ""}
                       />
                     </Input.Wrapper>
                   </Input.Root>
@@ -380,7 +375,10 @@ export function EditUserDrawer({
               mode="filled"
               size="medium"
               className="flex-1"
-              onClick={formik.handleSubmit}
+              onClick={(e) => {
+                e.preventDefault();
+                formik.handleSubmit();
+              }}
               disabled={isSubmitting || !formik.isValid}
             >
               {isSubmitting ? (

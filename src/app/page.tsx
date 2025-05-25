@@ -32,7 +32,7 @@ import { UsersTable } from "@/components/users-table";
 import { usePathname } from "next/navigation";
 import { useUsers } from "@/hooks/use-users";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+const UsersPage = () => {
   const pathname = usePathname();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -358,9 +358,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Divider.Root className="bg-stroke-soft-200 " />
         </div>
         <div className="flex flex-col gap-6 overflow-hidden p-6">
-          {pathname === "/" ? <UsersTable /> : children}
+          <UsersTable />
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default UsersPage;

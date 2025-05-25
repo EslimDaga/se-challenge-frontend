@@ -130,6 +130,8 @@ export function AddUserDrawer({
                     <Input.Wrapper>
                       <Input.Input
                         {...getFieldProps("first_name")}
+                        type="text"
+                        value={String(getFieldProps("first_name").value)}
                         placeholder="Ingresa el nombre"
                       />
                     </Input.Wrapper>
@@ -145,6 +147,8 @@ export function AddUserDrawer({
                     <Input.Wrapper>
                       <Input.Input
                         {...getFieldProps("last_name")}
+                        type="text"
+                        value={String(getFieldProps("last_name").value)}
                         placeholder="Ingresa el apellido"
                       />
                     </Input.Wrapper>
@@ -166,6 +170,8 @@ export function AddUserDrawer({
                   <Input.Wrapper>
                     <Input.Input
                       {...getFieldProps("username")}
+                      type="text"
+                      value={String(getFieldProps("username").value)}
                       placeholder="Ingresa el nombre de usuario"
                     />
                   </Input.Wrapper>
@@ -184,6 +190,7 @@ export function AddUserDrawer({
                       {...getFieldProps("email")}
                       type="email"
                       placeholder="email@ejemplo.com"
+                      value={String(getFieldProps("email").value)}
                     />
                   </Input.Wrapper>
                 </Input.Root>
