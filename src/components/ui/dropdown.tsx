@@ -3,8 +3,8 @@
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import * as React from "react";
 
+import { ArrowRightToLine } from "lucide-react";
 import { PolymorphicComponentProps } from "@/utils/polymorphic";
-import { RiArrowRightSLine } from "@remixicon/react";
 import { cn } from "@/utils/cn";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
@@ -140,7 +140,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   >
     {children}
     <span className="flex-1" />
-    <DropdownItemIcon as={RiArrowRightSLine} />
+    <DropdownItemIcon as={ArrowRightToLine} />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger";
